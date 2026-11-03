@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 40" fill="none">
+  <!-- Center blooming lotus -->
+  <path d="M30 6 C27 14 27 22 30 26 C33 22 33 14 30 6 Z" fill="url(#ornamentGold)" stroke="#DFC17B" stroke-width="0.8"/>
+  <path d="M30 26 C23 23 18 16 20 11 C24 14 27 21 30 26 Z" fill="#C79A3B" stroke="#DFC17B" stroke-width="0.6"/>
+  <path d="M30 26 C37 23 42 16 40 11 C36 14 33 21 30 26 Z" fill="#C79A3B" stroke="#DFC17B" stroke-width="0.6"/>
+  <path d="M30 26 C20 26 13 22 14 17 C19 19 25 24 30 26 Z" fill="#B88A2E" stroke="#DFC17B" stroke-width="0.5"/>
+  <path d="M30 26 C40 26 47 22 46 17 C41 19 35 24 30 26 Z" fill="#B88A2E" stroke="#DFC17B" stroke-width="0.5"/>
+  
+  <!-- Base arch / lotus leaves -->
+  <path d="M12 28 C20 32 40 32 48 28" stroke="#DFC17B" stroke-width="1.2" stroke-linecap="round"/>
+  <circle cx="30" cy="30" r="1.5" fill="#DFC17B"/>
+  <circle cx="12" cy="28" r="1.2" fill="#DFC17B"/>
+  <circle cx="48" cy="28" r="1.2" fill="#DFC17B"/>
+  
+  <defs>
+    <linearGradient id="ornamentGold" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FCEAB8"/>
+      <stop offset="100%" stop-color="#C79A3B"/>
+    </linearGradient>
+  </defs>
+</svg>
+

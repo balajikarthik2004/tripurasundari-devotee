@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  <!-- Sacred Kalasha & Flag (Trishul/Dhwaja) -->
+  <path d="M50 8 L50 20" stroke="#DFC17B" stroke-width="2" stroke-linecap="round"/>
+  <path d="M50 10 C56 12 55 17 50 18" fill="#C79A3B" fill-opacity="0.9"/>
+  <circle cx="50" cy="20" r="3" fill="#DFC17B"/>
+  
+  <!-- Temple Shikhara / Dome Top -->
+  <path d="M50 23 C42 27 38 36 37 45 L63 45 C62 36 58 27 50 23 Z" fill="url(#goldGrad)" stroke="#DFC17B" stroke-width="1.2"/>
+  
+  <!-- Horizontal Dome Rings / Chala Layers -->
+  <path d="M35 45 C45 42 55 42 65 45 L66 52 C55 49 45 49 34 52 Z" fill="#C79A3B" stroke="#DFC17B" stroke-width="1"/>
+  <path d="M31 52 C44 49 56 49 69 52 L71 62 C57 59 43 59 29 62 Z" fill="url(#goldGrad2)" stroke="#DFC17B" stroke-width="1.2"/>
+  
+  <!-- Main Sanctum Arched Entrance (Torana) -->
+  <path d="M26 62 L74 62 L76 80 L24 80 Z" fill="#882245" stroke="#DFC17B" stroke-width="1.2"/>
+  <path d="M38 80 L38 69 C38 63 62 63 62 69 L62 80 Z" fill="#551028" stroke="#DFC17B" stroke-width="1.2"/>
+  <!-- Sanctum Inner Flame / Jyoti -->
+  <path d="M50 71 C48 74 48 76 50 78 C52 76 52 74 50 71 Z" fill="#DFC17B"/>
+  
+  <!-- Base Plinth / Mandapa with Lotus Petals -->
+  <path d="M20 80 L80 80 L82 86 L18 86 Z" fill="url(#goldGrad)" stroke="#DFC17B" stroke-width="1"/>
+  <path d="M14 86 L86 86 L88 92 L12 92 Z" fill="#882245" stroke="#DFC17B" stroke-width="1"/>
+  
+  <!-- Decorative Lotus Base Petals -->
+  <path d="M35 86 C40 83 45 83 50 86 C55 83 60 83 65 86" stroke="#DFC17B" stroke-width="1.5" stroke-linecap="round"/>
+  
+  <!-- Side Mini-Spires (Angashikharas) -->
+  <path d="M28 50 C24 53 23 58 24 62 L30 62 C30 58 29 53 28 50 Z" fill="#C79A3B" stroke="#DFC17B" stroke-width="0.8"/>
+  <path d="M72 50 C76 53 77 58 76 62 L70 62 C70 58 71 53 72 50 Z" fill="#C79A3B" stroke="#DFC17B" stroke-width="0.8"/>
+  <circle cx="28" cy="49" r="1.5" fill="#DFC17B"/>
+  <circle cx="72" cy="49" r="1.5" fill="#DFC17B"/>
+  
+  <defs>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F4E0A5"/>
+      <stop offset="50%" stop-color="#C79A3B"/>
+      <stop offset="100%" stop-color="#9C7221"/>
+    </linearGradient>
+    <linearGradient id="goldGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E5C778"/>
+      <stop offset="60%" stop-color="#B88A2E"/>
+      <stop offset="100%" stop-color="#845D14"/>
+    </linearGradient>
+  </defs>
+</svg>
+

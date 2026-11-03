@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 24" fill="none">
+  <!-- Left flourish line -->
+  <path d="M10 12 L70 12 M70 12 C75 12 78 9 82 9 C86 9 89 12 94 12" stroke="#C79A3B" stroke-width="1.2" stroke-linecap="round"/>
+  <circle cx="20" cy="12" r="1.5" fill="#DFC17B"/>
+  <circle cx="50" cy="12" r="1.5" fill="#DFC17B"/>
+  
+  <!-- Right flourish line -->
+  <path d="M230 12 L170 12 M170 12 C165 12 162 9 158 9 C154 9 151 12 146 12" stroke="#C79A3B" stroke-width="1.2" stroke-linecap="round"/>
+  <circle cx="220" cy="12" r="1.5" fill="#DFC17B"/>
+  <circle cx="190" cy="12" r="1.5" fill="#DFC17B"/>
+
+  <!-- Center Lotus Motif -->
+  <g transform="translate(120, 12)">
+    <!-- Central petal -->
+    <path d="M0 -8 C-3 -3 -3 2 0 4 C3 2 3 -3 0 -8 Z" fill="#DFC17B" stroke="#C79A3B" stroke-width="0.8"/>
+    <!-- Inner side petals -->
+    <path d="M0 4 C-4 2 -7 -2 -6 -6 C-3 -4 -1 1 0 4 Z" fill="#C79A3B"/>
+    <path d="M0 4 C4 2 7 -2 6 -6 C3 -4 1 1 0 4 Z" fill="#C79A3B"/>
+    <!-- Outer lower petals -->
+    <path d="M0 4 C-6 4 -11 0 -11 -3 C-7 -2 -3 2 0 4 Z" fill="#B88A2E"/>
+    <path d="M0 4 C6 4 11 0 11 -3 C7 -2 3 2 0 4 Z" fill="#B88A2E"/>
+    <!-- Base pearl -->
+    <circle cx="0" cy="5" r="1.5" fill="#DFC17B"/>
+    <circle cx="-16" cy="0" r="1.2" fill="#DFC17B"/>
+    <circle cx="16" cy="0" r="1.2" fill="#DFC17B"/>
+  </g>
+</svg>
+

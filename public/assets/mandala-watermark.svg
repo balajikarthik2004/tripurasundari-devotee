@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" fill="none">
+  <g stroke="#DFC17B" stroke-width="1.2" opacity="0.35">
+    <!-- Center Rings -->
+    <circle cx="300" cy="300" r="40" />
+    <circle cx="300" cy="300" r="70" stroke-dasharray="3 3" />
+    <circle cx="300" cy="300" r="105" />
+    <circle cx="300" cy="300" r="145" stroke-dasharray="4 4" />
+    <circle cx="300" cy="300" r="185" />
+    <circle cx="300" cy="300" r="230" stroke-dasharray="6 3" />
+    <circle cx="300" cy="300" r="275" />
+    
+    <!-- 8 Inner Petals -->
+    <path d="M300 230 C280 260 280 280 300 300 C320 280 320 260 300 230 Z" />
+    <path d="M300 370 C280 340 280 320 300 300 C320 320 320 340 300 370 Z" />
+    <path d="M230 300 C260 280 280 280 300 300 C280 320 260 320 230 300 Z" />
+    <path d="M370 300 C340 280 320 280 300 300 C320 320 340 320 370 300 Z" />
+    <path d="M250 250 C265 280 280 285 300 300 C285 280 280 265 250 250 Z" />
+    <path d="M350 250 C335 280 320 285 300 300 C315 280 320 265 350 250 Z" />
+    <path d="M250 350 C265 320 280 315 300 300 C285 320 280 335 250 350 Z" />
+    <path d="M350 350 C335 320 320 315 300 300 C315 320 320 335 350 350 Z" />
+
+    <!-- 16 Mid Pointed Petals -->
+    <g transform="translate(300,300)">
+      <path d="M0 -185 C-25 -140 -15 -105 0 -105 C15 -105 25 -140 0 -185 Z" />
+      <path d="M0 -185 C-25 -140 -15 -105 0 -105 C15 -105 25 -140 0 -185 Z" transform="rotate(22.5)" />
+      <path d="M0 -185 C-25 -140 -15 -105 0 -105 C15 -105 25 -140 0 -185 Z" transform="rotate(45)" />
+      <path d="M0 -185 C-25 -140 -15 -105 0 -105 C15 -105 25 -140 0 -185 Z" transform="rotate(67.5)" />
+      <path d="M0 -185 C-25 -140 -15 -105 0 -105 C15 -105 25 -140 0 -185 Z" transform="rotate(90)" />
+      <path d="M0 -185 C-25 -140 -15 -105 0 -105 C15 -105 25 -140 0 -185 Z" transform="rotate(112.5)" />
+      <path d="M0 -185 C-25 -140 -15 -105 0 -105 C15 -105 25 -140 0 -185 Z" transform="rotate(135)" />
+      <path d="M0 -185 C-25 -140 -15 -105 0 -105 C15 -105 25 -140 0 -185 Z" transform="rotate(157.5)" />
+      <path d="M0 -185 C-25 -140 -15 -105 0 -105 C15 -105 25 -140 0 -185 Z" transform="rotate(180)" />
+      <path d="M0 -185 C-25 -140 -15 -105 0 -105 C15 -105 25 -140 0 -185 Z" transform="rotate(202.5)" />
+      <path d="M0 -185 C-25 -140 -15 -105 0 -105 C15 -105 25 -140 0 -185 Z" transform="rotate(225)" />
+      <path d="M0 -185 C-25 -140 -15 -105 0 -105 C15 -105 25 -140 0 -185 Z" transform="rotate(247.5)" />
+      <path d="M0 -185 C-25 -140 -15 -105 0 -105 C15 -105 25 -140 0 -185 Z" transform="rotate(270)" />
+      <path d="M0 -185 C-25 -140 -15 -105 0 -105 C15 -105 25 -140 0 -185 Z" transform="rotate(292.5)" />
+      <path d="M0 -185 C-25 -140 -15 -105 0 -105 C15 -105 25 -140 0 -185 Z" transform="rotate(315)" />
+      <path d="M0 -185 C-25 -140 -15 -105 0 -105 C15 -105 25 -140 0 -185 Z" transform="rotate(337.5)" />
+
+      <!-- Outer Lotus Arches -->
+      <path d="M0 -275 C-35 -240 -25 -185 0 -185 C25 -185 35 -240 0 -275 Z" />
+      <path d="M0 -275 C-35 -240 -25 -185 0 -185 C25 -185 35 -240 0 -275 Z" transform="rotate(30)" />
+      <path d="M0 -275 C-35 -240 -25 -185 0 -185 C25 -185 35 -240 0 -275 Z" transform="rotate(60)" />
+      <path d="M0 -275 C-35 -240 -25 -185 0 -185 C25 -185 35 -240 0 -275 Z" transform="rotate(90)" />
+      <path d="M0 -275 C-35 -240 -25 -185 0 -185 C25 -185 35 -240 0 -275 Z" transform="rotate(120)" />
+      <path d="M0 -275 C-35 -240 -25 -185 0 -185 C25 -185 35 -240 0 -275 Z" transform="rotate(150)" />
+      <path d="M0 -275 C-35 -240 -25 -185 0 -185 C25 -185 35 -240 0 -275 Z" transform="rotate(180)" />
+      <path d="M0 -275 C-35 -240 -25 -185 0 -185 C25 -185 35 -240 0 -275 Z" transform="rotate(210)" />
+      <path d="M0 -275 C-35 -240 -25 -185 0 -185 C25 -185 35 -240 0 -275 Z" transform="rotate(240)" />
+      <path d="M0 -275 C-35 -240 -25 -185 0 -185 C25 -185 35 -240 0 -275 Z" transform="rotate(270)" />
+      <path d="M0 -275 C-35 -240 -25 -185 0 -185 C25 -185 35 -240 0 -275 Z" transform="rotate(300)" />
+      <path d="M0 -275 C-35 -240 -25 -185 0 -185 C25 -185 35 -240 0 -275 Z" transform="rotate(330)" />
+    </g>
+  </g>
+</svg>
+

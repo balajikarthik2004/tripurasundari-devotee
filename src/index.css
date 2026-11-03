@@ -1,0 +1,191 @@
+@import "tailwindcss";
+
+/* -------------------------------------------------------------------------
+   Global Reusable Typography Variables
+   Heading: Montserrat with Noto Sans regional fallbacks
+   Body & UI: Roboto / Robout with Noto Sans regional fallbacks
+   Numbers: Roboto / Robout / Montserrat with lining tabular numerals
+   ------------------------------------------------------------------------- */
+@font-face {
+  font-family: 'Robout';
+  src: local('Roboto'), local('Roboto-Regular');
+}
+
+:root {
+  --font-heading: "Montserrat", "Noto Sans Bengali", "Noto Sans Devanagari", sans-serif;
+  --font-body: "Roboto", "Robout", "Noto Sans Bengali", "Noto Sans Devanagari", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-numbers: "Roboto", "Robout", "Montserrat", system-ui, sans-serif;
+  --font-serif: var(--font-heading);
+  --font-sans: var(--font-body);
+}
+
+:lang(bn) {
+  --font-heading: "Montserrat", "Noto Sans Bengali", sans-serif;
+  --font-body: "Roboto", "Robout", "Noto Sans Bengali", sans-serif;
+  --font-numbers: "Roboto", "Robout", "Noto Sans Bengali", sans-serif;
+}
+
+:lang(hi) {
+  --font-heading: "Montserrat", "Noto Sans Devanagari", sans-serif;
+  --font-body: "Roboto", "Robout", "Noto Sans Devanagari", sans-serif;
+  --font-numbers: "Roboto", "Robout", "Noto Sans Devanagari", sans-serif;
+}
+
+@theme {
+  --color-sidebar-bg: #4A1027;
+  --color-sidebar-end: #64132F;
+  --color-sidebar-active: #70203A;
+  --color-sidebar-indicator: #D6AD52;
+  --color-sidebar-text: #FFF8ED;
+  --color-sidebar-secondary: #E5D6DC;
+
+  --color-maroon: #6F1837;
+  --color-maroon-dark: #4A1027;
+  --color-maroon-light: #882245;
+  --color-maroon-hover: #5A122B;
+  
+  --color-vermilion: #C83B32;
+  --color-vermilion-hover: #AF2F27;
+  --color-vermilion-light: #FDF1F0;
+
+  --color-gold: #C79A3B;
+  --color-gold-light: #DEC077;
+  --color-gold-indicator: #D6AD52;
+  --color-gold-subtle: #F4EAD3;
+  --color-gold-border: rgba(199, 154, 59, 0.3);
+
+  --color-ivory: #FFF8ED;
+  --color-sand: #F0E3D0;
+  --color-sand-light: #FAF4E9;
+  --color-charcoal: #1A121E;
+  --color-charcoal-muted: #443948;
+  --color-charcoal-light: #635767;
+
+  --font-serif: "Montserrat", "Noto Sans Bengali", "Noto Sans Devanagari", sans-serif;
+  --font-heading: "Montserrat", "Noto Sans Bengali", "Noto Sans Devanagari", sans-serif;
+  --font-sans: "Roboto", "Robout", "Noto Sans Bengali", "Noto Sans Devanagari", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-body: "Roboto", "Robout", "Noto Sans Bengali", "Noto Sans Devanagari", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-numbers: "Roboto", "Robout", "Montserrat", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+@layer base {
+  html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    overscroll-behavior: none;
+    overscroll-behavior-y: none;
+    font-family: var(--font-body);
+    font-size: 16px;
+    background-color: #FFF8ED;
+    color: #1A121E;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+  
+  #root {
+    height: 100%;
+    overflow: hidden;
+  }
+
+  /* 1. Global Headings: Montserrat with confident bold weight, modern lining numerals */
+  h1, h2, h3, h4, h5, h6, .font-heading, .font-serif {
+    font-family: var(--font-heading);
+    letter-spacing: -0.015em;
+    font-weight: 700;
+    font-variant-numeric: lining-nums tabular-nums;
+    font-feature-settings: "lnum" 1, "tnum" 1;
+  }
+
+  h1 {
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  h2 {
+    font-weight: 700;
+    letter-spacing: -0.015em;
+  }
+
+  h3 {
+    font-weight: 700;
+  }
+
+  h4, h5, h6 {
+    font-weight: 600;
+  }
+
+  /* 2. Global Body & UI: Roboto / Robout with clean legibility */
+  body, input, select, textarea, label, table, nav {
+    font-family: var(--font-body);
+    font-weight: 400;
+  }
+
+  p {
+    font-family: var(--font-body);
+    font-weight: 400;
+    color: #332936;
+  }
+
+  button {
+    font-family: var(--font-body);
+    font-weight: 600;
+  }
+
+  /* 3. Numerical Readability Rule:
+     Use Roboto / Robout / Montserrat for timings, dates, queue waiting times, prices, donation amounts, booking information
+     Apply lining-nums tabular-nums */
+  .tabular-nums,
+  .font-numeric,
+  .font-tabular,
+  time,
+  data,
+  input[type="date"],
+  input[type="time"],
+  input[type="number"],
+  .number,
+  .price {
+    font-family: var(--font-numbers) !important;
+    font-variant-numeric: lining-nums tabular-nums !important;
+    font-feature-settings: "tnum" 1, "lnum" 1 !important;
+    font-weight: 700;
+  }
+}
+
+/* Custom smooth, thin scrollbar for dashboard scroll container */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(199, 154, 59, 0.35) transparent;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(199, 154, 59, 0.3);
+  border-radius: 9999px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(199, 154, 59, 0.6);
+}
+
+/* Subtle transitions for buttons and cards */
+.card-hover-subtle {
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card-hover-subtle:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px -6px rgba(74, 16, 39, 0.08);
+}
