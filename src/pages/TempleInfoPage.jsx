@@ -71,7 +71,7 @@ export default function TempleInfoPage({
   };
 
   const navTabs = [
-    { id: "history", label: "History & Heritage", icon: BookOpen },
+    { id: "history", label: "History", icon: BookOpen },
     { id: "stories", label: "Heritage Stories (8)", icon: Sparkles },
     { id: "significance", label: "Divine Significance", icon: Sparkles },
     { id: "architecture", label: "Architecture (Kurma Peeth)", icon: MapPin },
