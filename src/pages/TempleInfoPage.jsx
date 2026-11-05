@@ -80,7 +80,6 @@ export default function TempleInfoPage({
     },
     { id: "significance", label: "Divine Significance", icon: Sparkles },
     { id: "architecture", label: "Architecture (Kurma Peeth)", icon: MapPin },
-    { id: "kalyan-sagar", label: "Kalyan Sagar Lake", icon: Heart },
     { id: "gallery", label: "Photo Gallery", icon: ImageIcon },
   ];
 
@@ -601,44 +600,7 @@ export default function TempleInfoPage({
       )}
 
       {/* =========================================================================
-          TAB 5: KALYAN SAGAR SACRED LAKE
-          ========================================================================= */}
-      {activeTab === "kalyan-sagar" && (
-        <div className="bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-7 border border-[#C79A3B]/30 shadow-xs space-y-5">
-          <div className="space-y-1">
-            <h2 className="font-serif text-xl sm:text-2xl font-bold text-[#6F1837]">
-              Kalyan Sagar & Sacred Turtle Heritage
-            </h2>
-            <p className="text-xs text-[#5D5460]">
-              The 6.4-acre sacred lake east of the temple holding the ancient Bostami softshell turtles.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-5 items-center">
-            <div className="md:col-span-6 h-60 rounded-2xl overflow-hidden bg-slate-100 border border-[#C79A3B]/40">
-              <img
-                src="/assets/kalyan-sagar.jpg"
-                alt="Kalyan Sagar Lake"
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div className="md:col-span-6 space-y-3 text-xs text-[#5D5460] leading-relaxed">
-              <p>
-                Excavated in the 16th century alongside the temple consecration, Kalyan Sagar is revered as a holy tirtha. Devotees perform ritual ablutions before entering the temple sanctum.
-              </p>
-              <p>
-                The lake is internationally recognized for nurturing a thriving population of the critically endangered Black Softshell Turtle (<em>Nilssonia nigricans</em>), venerated locally as divine messengers of the Kurma Avatar.
-              </p>
-              <div className="p-3 bg-amber-50 rounded-xl border border-amber-200 text-amber-900">
-                <strong>Conservation Etiquette:</strong> Please feed only temple-approved puffed rice at designated bathing ghats. Do not discard plastic or soap in the holy waters.
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* =========================================================================
-          TAB 6: PHOTO GALLERY
+          TAB 5: PHOTO GALLERY
           ========================================================================= */}
       {activeTab === "gallery" && (
         <div className="bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-7 border border-[#C79A3B]/30 shadow-xs space-y-5">

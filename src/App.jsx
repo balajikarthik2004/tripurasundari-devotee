@@ -79,7 +79,7 @@ export default function App() {
 
       if (typeof extra === "string") {
         if (
-          ["history", "stories", "significance", "architecture", "kalyan-sagar", "gallery"].includes(
+          ["history", "stories", "significance", "architecture", "gallery"].includes(
             extra
           )
         ) {
