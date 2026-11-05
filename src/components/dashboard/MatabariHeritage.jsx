@@ -51,9 +51,9 @@ export default function MatabariHeritage({ onNavigate }) {
 
   const handleCardClick = (articleId) => {
     if (onNavigate) {
-      onNavigate("article", articleId);
+      onNavigate("info", { tab: "stories", articleId });
     } else if (typeof window !== "undefined") {
-      window.location.hash = `article?id=${articleId}`;
+      window.location.hash = `info?tab=stories&article=${articleId}`;
     }
   };
 

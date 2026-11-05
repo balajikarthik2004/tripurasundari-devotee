@@ -29,29 +29,41 @@ export default function App() {
     return "reach";
   });
 
-  const [selectedArticleId, setSelectedArticleId] = useState(() => {
+  const [infoSubTab, setInfoSubTab] = useState(() => {
     if (typeof window !== "undefined" && window.location.hash) {
-      const match = window.location.hash.match(/[?&]id=([^&]+)/);
+      const match = window.location.hash.match(/[?&]tab=([^&]+)/);
       if (match) return match[1];
     }
-    return "kalyan-sagar";
+    return "history";
+  });
+
+  const [infoArticleId, setInfoArticleId] = useState(() => {
+    if (typeof window !== "undefined" && window.location.hash) {
+      const match =
+        window.location.hash.match(/[?&]article=([^&]+)/) ||
+        window.location.hash.match(/[?&]id=([^&]+)/);
+      if (match) return match[1];
+    }
+    return null;
   });
 
   // Sync hash on navigation
   const handleNavSelect = (navId, extra) => {
-    setActiveNav(navId);
-
     if (navId === "article") {
       let targetArticle = "kalyan-sagar";
       if (typeof extra === "string") {
         targetArticle = extra;
       } else if (extra?.id) {
         targetArticle = extra.id;
+      } else if (extra?.articleId) {
+        targetArticle = extra.articleId;
       }
-      setSelectedArticleId(targetArticle);
+      setActiveNav("info");
+      setInfoSubTab("stories");
+      setInfoArticleId(targetArticle);
 
       if (typeof window !== "undefined") {
-        window.location.hash = `article?id=${targetArticle}`;
+        window.location.hash = `info?tab=stories&article=${targetArticle}`;
         const scrollable = document.querySelector(".custom-scrollbar");
         if (scrollable) {
           scrollable.scrollTo({ top: 0, behavior: "smooth" });
@@ -59,6 +71,46 @@ export default function App() {
       }
       return;
     }
+
+    if (navId === "info") {
+      setActiveNav("info");
+      let targetTab = "history";
+      let targetArticle = null;
+
+      if (typeof extra === "string") {
+        if (
+          ["history", "stories", "significance", "architecture", "kalyan-sagar", "gallery"].includes(
+            extra
+          )
+        ) {
+          targetTab = extra;
+        } else {
+          targetTab = "stories";
+          targetArticle = extra;
+        }
+      } else if (extra) {
+        if (extra.tab) targetTab = extra.tab;
+        if (extra.articleId || extra.id) {
+          targetArticle = extra.articleId || extra.id;
+        }
+      }
+
+      setInfoSubTab(targetTab);
+      setInfoArticleId(targetArticle);
+
+      if (typeof window !== "undefined") {
+        window.location.hash = targetArticle
+          ? `info?tab=${targetTab}&article=${targetArticle}`
+          : `info?tab=${targetTab}`;
+        const scrollable = document.querySelector(".custom-scrollbar");
+        if (scrollable) {
+          scrollable.scrollTo({ top: 0, behavior: "smooth" });
+        }
+      }
+      return;
+    }
+
+    setActiveNav(navId);
 
     if (navId === "guide") {
       let targetTab = "reach";
@@ -93,15 +145,21 @@ export default function App() {
       const rawHash = window.location.hash.replace("#", "").toLowerCase();
       const nav = rawHash.split("?")[0].split("/")[0];
       const tabMatch = rawHash.match(/[?&]tab=([^&]+)/);
-      const idMatch = rawHash.match(/[?&]id=([^&]+)/);
+      const articleMatch =
+        rawHash.match(/[?&]article=([^&]+)/) || rawHash.match(/[?&]id=([^&]+)/);
 
-      if (nav) {
+      if (nav === "article") {
+        setActiveNav("info");
+        setInfoSubTab("stories");
+        setInfoArticleId(articleMatch?.[1] || "kalyan-sagar");
+      } else if (nav === "info") {
+        setActiveNav("info");
+        if (tabMatch?.[1]) setInfoSubTab(tabMatch[1]);
+        if (articleMatch?.[1]) setInfoArticleId(articleMatch[1]);
+      } else if (nav) {
         setActiveNav(nav);
         if (nav === "guide" && tabMatch?.[1]) {
           setGuideSubTab(tabMatch[1]);
-        }
-        if (nav === "article" && idMatch?.[1]) {
-          setSelectedArticleId(idMatch[1]);
         }
       } else {
         setActiveNav("home");
@@ -117,7 +175,7 @@ export default function App() {
 
   return (
     <AppLayout
-      activeNav={activeNav === "article" ? "home" : activeNav}
+      activeNav={activeNav}
       onSelectNav={handleNavSelect}
     >
       {activeNav === "darshan" ? (
@@ -131,18 +189,17 @@ export default function App() {
       ) : activeNav === "accommodation" ? (
         <AccommodationPage onNavigate={handleNavSelect} />
       ) : activeNav === "info" ? (
-        <TempleInfoPage onNavigate={handleNavSelect} />
+        <TempleInfoPage
+          onNavigate={handleNavSelect}
+          initialTab={infoSubTab}
+          initialArticleId={infoArticleId}
+        />
       ) : activeNav === "events" ? (
         <EventsPage onNavigate={handleNavSelect} />
       ) : activeNav === "home" ? (
         <Dashboard onNavigate={handleNavSelect} />
       ) : activeNav === "guide" ? (
         <VisitGuidePage onNavigate={handleNavSelect} initialTab={guideSubTab} />
-      ) : activeNav === "article" ? (
-        <HeritageArticlePage
-          articleId={selectedArticleId}
-          onNavigate={handleNavSelect}
-        />
       ) : (
         <ComingSoonModule navId={activeNav} onNavigate={handleNavSelect} />
       )}
