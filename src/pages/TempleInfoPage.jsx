@@ -72,12 +72,7 @@ export default function TempleInfoPage({
 
   const navTabs = [
     { id: "history", label: "History & Heritage", icon: BookOpen },
-    {
-      id: "stories",
-      label: `Heritage Stories (${heritageArticles.length})`,
-      icon: BookOpen,
-      badge: "8 Stories",
-    },
+    { id: "stories", label: "Heritage Stories (8)", icon: Sparkles },
     { id: "significance", label: "Divine Significance", icon: Sparkles },
     { id: "architecture", label: "Architecture (Kurma Peeth)", icon: MapPin },
     { id: "gallery", label: "Photo Gallery", icon: ImageIcon },
@@ -178,8 +173,8 @@ export default function TempleInfoPage({
         </div>
       )}
 
-      {/* SECTION NAVIGATION TABS */}
-      <div className="flex items-center gap-1.5 sm:gap-2 border-b border-[#C79A3B]/30 pb-2 overflow-x-auto custom-scrollbar select-none">
+      {/* Section Navigation Tabs: Full Width, Premium Segmented Style */}
+      <div className="w-full bg-[#FFFDF8] p-1.5 rounded-2xl border border-[#DEC077]/70 shadow-xs grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-1.5 select-none">
         {navTabs.map((t) => {
           const Icon = t.icon;
           const isActive = activeTab === t.id;
@@ -192,24 +187,22 @@ export default function TempleInfoPage({
                 if (t.id !== "stories") {
                   setSelectedArticleId(null);
                 }
+                if (typeof window !== "undefined") {
+                  window.location.hash = `info?tab=${t.id}`;
+                }
               }}
-              className={`flex items-center gap-1.5 px-3.5 sm:px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
+              className={`flex items-center justify-center gap-1.5 py-2.5 px-1.5 sm:px-2 rounded-xl text-[11px] xl:text-xs font-bold transition-all whitespace-nowrap cursor-pointer text-center w-full ${
                 isActive
-                  ? "bg-[#6F1837] text-white shadow-xs"
-                  : "bg-white text-[#665D6A] border border-[#C79A3B]/30 hover:border-[#6F1837] hover:text-[#6F1837]"
+                  ? "bg-[#6F1837] text-white shadow-xs ring-1 ring-[#DEC077]"
+                  : "bg-white text-[#5D5460] border border-[#E7CE96]/70 hover:border-[#6F1837] hover:text-[#6F1837]"
               }`}
             >
               <Icon
-                className={`w-3.5 h-3.5 ${
+                className={`w-3.5 h-3.5 shrink-0 ${
                   isActive ? "text-[#DFC17B]" : "text-[#C79A3B]"
                 }`}
               />
               <span>{t.label}</span>
-              {t.badge && !isActive && (
-                <span className="ml-1 px-1.5 py-0.2 rounded-full bg-[#FFF8ED] text-[#8C5D17] border border-[#DEC077]/70 text-[9px]">
-                  {t.badge}
-                </span>
-              )}
             </button>
           );
         })}
