@@ -106,20 +106,22 @@ export default function LatestAnnouncements({ onNavigate, targetHeight }) {
       ref={containerRef}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      style={targetHeight ? { height: `${targetHeight}px` } : undefined}
-      className="bg-white rounded-2xl p-3.5 sm:p-4 border border-[#C79A3B]/30 shadow-[0_2px_10px_rgba(74,16,39,0.04)] hover:shadow-[0_6px_20px_rgba(74,16,39,0.08)] transition-all duration-200 flex flex-col justify-between select-none box-border w-full overflow-hidden"
+      className="bg-white rounded-2xl p-3 sm:p-3.5 border border-[#DEC077]/70 shadow-[0_2px_10px_rgba(74,16,39,0.04)] hover:shadow-[0_6px_20px_rgba(74,16,39,0.08)] transition-all duration-200 flex flex-col justify-between h-full select-none box-border w-full overflow-hidden"
     >
-      {/* 1. Header: Fixed height, non-scrolling */}
-      <div className="flex items-center justify-between pb-2 mb-1.5 border-b border-[#F0E3D0]/80 shrink-0">
-        <div className="flex items-center gap-2">
-          <div className="w-6.5 h-6.5 rounded-lg bg-[#FFF8ED] border border-[#C79A3B]/40 flex items-center justify-center text-[#6F1837] shadow-2xs relative">
+      {/* 1. Header: Fixed height, level-matched with Heritage & Guide */}
+      <div className="flex items-center justify-between pb-2 mb-2 border-b border-[#F0E3D0]/80 shrink-0">
+        <div className="flex items-center gap-2 min-w-0">
+          <div className="w-6 h-6 rounded-lg bg-[#FFF8ED] border border-[#DEC077]/50 flex items-center justify-center text-[#6F1837] shadow-2xs relative shrink-0">
             <Bell className="w-3.5 h-3.5 text-[#6F1837]" />
             <span className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
           </div>
-          <div>
-            <h3 className="font-serif text-[16px] sm:text-[17px] font-bold text-[#6F1837] tracking-tight">
-              {t("updates.heading", "Latest Announcements")}
+          <div className="min-w-0">
+            <h3 className="font-serif text-[15px] sm:text-[16px] font-bold text-[#6F1837] tracking-tight leading-tight truncate">
+              {t("updates.heading", "Latest Updates")}
             </h3>
+            <span className="text-[10px] text-[#7A6448] block leading-tight truncate">
+              Official news & announcements
+            </span>
           </div>
         </div>
 

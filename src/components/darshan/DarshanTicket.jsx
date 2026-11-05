@@ -46,7 +46,7 @@ General darshan is 100% free at the temple complex.
         </div>
         <div>
           <span className="text-[10.5px] font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-3 py-0.5 rounded-full border border-emerald-300">
-            Booking Confirmed • Free General Darshan
+            Booking Confirmed • {booking.categoryName || "General Darshan"}
           </span>
           <h2 className="font-serif text-xl sm:text-2xl font-bold text-[#6F1837] tracking-tight mt-1.5">
             Your Darshan Pass is Ready
@@ -143,10 +143,36 @@ General darshan is 100% free at the temple complex.
                   Darshan Fee
                 </span>
                 <span className="font-bold text-emerald-700 text-xs">
-                  ₹0 (Free Pass)
+                  {booking.fee || "₹0 (Free Pass)"}
                 </span>
               </div>
             </div>
+
+            {/* Entry Gate & Category Notice */}
+            <div className="pt-2 border-t border-[#F0E3D0] flex items-center justify-between text-[11px]">
+              <div>
+                <span className="text-[#877E8A] block text-[9.5px] uppercase font-bold">Category</span>
+                <span className="font-bold text-[#6F1837]">{booking.categoryName || "General Darshan"}</span>
+              </div>
+              <div className="text-right">
+                <span className="text-[#877E8A] block text-[9.5px] uppercase font-bold">Designated Entry</span>
+                <span className="font-semibold text-[#845212]">{booking.entryGate || "Gate 1 (Main Entrance)"}</span>
+              </div>
+            </div>
+
+            {booking.needsWheelchair && (
+              <div className="p-2 rounded-lg bg-[#EFF6FF] border border-[#BFDBFE] text-[10.5px] text-[#1D4ED8] font-medium flex items-center gap-1.5">
+                <CheckCircle2 className="w-3 h-3 text-[#1D4ED8] shrink-0" />
+                <span>Wheelchair & Ramp Volunteer requested at Gate 1 Helpdesk.</span>
+              </div>
+            )}
+
+            {booking.needsPramStorage && (
+              <div className="p-2 rounded-lg bg-[#FDF2F8] border border-[#FBCFE8] text-[10.5px] text-[#BE185D] font-medium flex items-center gap-1.5">
+                <CheckCircle2 className="w-3 h-3 text-[#BE185D] shrink-0" />
+                <span>Pram Storage & Feeder Room access requested at Gate 1 Helpdesk.</span>
+              </div>
+            )}
           </div>
 
           {/* QR Code Container (4 cols) */}

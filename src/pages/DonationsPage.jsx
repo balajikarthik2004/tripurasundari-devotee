@@ -1,5 +1,30 @@
 import React, { useState, useEffect } from "react";
-import { Heart, ShieldCheck, Download, CheckCircle2, AlertCircle, ArrowRight, ArrowLeft, User, Phone, Mail, FileText, QrCode, CreditCard, Building2, Sparkles, Utensils, Shield, Fish } from "lucide-react";
+import {
+  Heart,
+  ShieldCheck,
+  Download,
+  CheckCircle2,
+  AlertCircle,
+  ArrowRight,
+  ArrowLeft,
+  User,
+  Phone,
+  Mail,
+  FileText,
+  QrCode,
+  CreditCard,
+  Building2,
+  Sparkles,
+  Utensils,
+  Shield,
+  Fish,
+  CalendarDays,
+  CalendarClock,
+  RefreshCw,
+  Check,
+  RotateCcw,
+  Calendar,
+} from "lucide-react";
 import { donationPurposes } from "../data/templePortalData";
 import { useLanguage } from "../context/LanguageContext";
 
@@ -19,6 +44,18 @@ export default function DonationsPage({ onNavigate }) {
   const [customAmount, setCustomAmount] = useState("");
   const [paymentMode, setPaymentMode] = useState("UPI"); // 'UPI' | 'Card' | 'NetBanking'
   const [step, setStep] = useState(1); // 1: Amount & Purpose, 2: Donor Info, 3: Payment Mode, 4: Receipt
+
+  // Donation frequency: 'one_time' | 'recurring' | 'pledge'
+  const [frequency, setFrequency] = useState("one_time");
+  // If recurring: 'monthly' | 'quarterly' | 'annually'
+  const [recurringCycle, setRecurringCycle] = useState("monthly");
+  // If pledge:
+  const [pledgeDate, setPledgeDate] = useState(() => {
+    const d = new Date();
+    d.setDate(d.getDate() + 30);
+    return d.toISOString().split("T")[0];
+  });
+  const [pledgeOccasion, setPledgeOccasion] = useState("Birthday / Special Occasion");
 
   // Donor Details
   const [formData, setFormData] = useState({
@@ -41,6 +78,8 @@ export default function DonationsPage({ onNavigate }) {
           donorName: "Praneeth Ganithala",
           purpose: "Annabhog / Nitya Annadanam",
           amount: 2100,
+          frequency: "one_time",
+          frequencyLabel: "One-time Offering",
           date: "28 Oct 2026",
           paymentMode: "UPI (Simulated)",
           status: "Completed (Prototype)",
@@ -85,19 +124,34 @@ export default function DonationsPage({ onNavigate }) {
 
   const handleCompleteDonation = () => {
     const refId = `MTS-2026-DON-${Math.floor(1000 + Math.random() * 9000)}`;
+    const frequencyLabel =
+      frequency === "one_time"
+        ? "One-time Offering"
+        : frequency === "recurring"
+        ? `Recurring (${recurringCycle.toUpperCase()} Auto-debit)`
+        : `Sacred Pledge (Due: ${new Date(pledgeDate).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })})`;
+
     const newDonation = {
       id: refId,
       donorName: formData.fullName,
       purpose: selectedPurpose.title,
       amount: amount,
+      frequency: frequency,
+      frequencyLabel: frequencyLabel,
+      recurringCycle: frequency === "recurring" ? recurringCycle : null,
+      pledgeDate: frequency === "pledge" ? pledgeDate : null,
+      pledgeOccasion: frequency === "pledge" ? pledgeOccasion : null,
       date: new Date().toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }),
-      paymentMode: `${paymentMode} (Prototype)`,
-      status: "Successful (Prototype)",
+      paymentMode:
+        frequency === "pledge"
+          ? "Pledge Sankalp (Pay on Due Date)"
+          : `${paymentMode} (${frequency === "recurring" ? "Autopay Mandate" : "Simulated"})`,
+      status: frequency === "pledge" ? "Pledged (Active Sankalp)" : "Completed (Prototype)",
       taxExemption: formData.is80GRequested ? "80G Provisional Claim" : "General Devotional Offering",
       timestamp: new Date().toLocaleString("en-IN", { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" }),
     };
 
-    setDonationHistory(prev => [newDonation, ...prev]);
+    setDonationHistory((prev) => [newDonation, ...prev]);
     setConfirmedDonation(newDonation);
     setStep(4);
   };
@@ -169,75 +223,265 @@ export default function DonationsPage({ onNavigate }) {
       </div>
 
       {activeTab === "donate" && (
-        <div className="space-y-4 max-w-3xl mx-auto">
-          {/* STEP 1: Select Purpose & Amount */}
+        <div className="space-y-4 max-w-5xl mx-auto">
+          {/* STEP 1: Frequency, Purpose & Amount (Ultra-Low Scroll 2-Column Layout) */}
           {step === 1 && (
-            <div className="bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-7 border border-[#C79A3B]/30 shadow-sm space-y-5">
-              <div>
-                <h3 className="font-serif text-lg font-bold text-[#6F1837] mb-1">
-                  1. Select Devotional Seva Purpose
-                </h3>
-                <p className="text-xs text-[#5D5460]">
-                  Choose which temple initiative you would like to support with your sacred offering.
-                </p>
-              </div>
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
+              {/* Left Column (7 cols): Donation Frequency + Purpose Selection */}
+              <div className="lg:col-span-7 bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-5 border border-[#C79A3B]/30 shadow-xs space-y-4">
+                {/* 1. Donation Frequency (Matches Reference Design) */}
+                <div className="space-y-2">
+                  <div className="flex items-center gap-1.5 text-xs font-bold text-[#2D2430]">
+                    <CalendarDays className="w-4 h-4 text-[#D92D20]" />
+                    <span className="text-sm font-heading text-[#681B37]">
+                      Donation Frequency
+                    </span>
+                  </div>
 
-              {/* Purpose Cards */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {donationPurposes.map((p) => {
-                  const Icon = iconMap[p.icon] || Heart;
-                  const isSelected = selectedPurpose.id === p.id;
-                  return (
-                    <div
-                      key={p.id}
-                      role="button"
-                      tabIndex={0}
-                      onClick={() => { setSelectedPurpose(p); setAmount(p.recommendedAmounts[1]); }}
-                      className={`p-3.5 rounded-xl border text-left transition-all cursor-pointer flex items-start gap-3 ${
-                        isSelected
-                          ? "bg-[#FFF8ED] border-[#6F1837] ring-1.5 ring-[#6F1837] shadow-xs"
-                          : "bg-white border-[#C79A3B]/30 hover:border-[#C79A3B]/70 hover:bg-[#FAF4E9]"
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                    {/* One-time Option */}
+                    <button
+                      type="button"
+                      onClick={() => setFrequency("one_time")}
+                      className={`h-14 px-3 rounded-xl border text-left transition-all cursor-pointer flex items-center gap-2.5 ${
+                        frequency === "one_time"
+                          ? "bg-[#D92D20] text-white border-[#D92D20] shadow-xs ring-2 ring-[#D92D20]/30"
+                          : "bg-white text-[#2D2430] border-[#E8DCC8] hover:border-[#D92D20]/60 hover:bg-[#FFFDF9]"
                       }`}
                     >
-                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 border ${
-                        isSelected ? "bg-[#6F1837] text-[#DFC17B] border-[#6F1837]" : "bg-[#FFF8ED] text-[#6F1837] border-[#C79A3B]/30"
-                      }`}>
-                        <Icon className="w-4 h-4" />
+                      <div
+                        className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 ${
+                          frequency === "one_time"
+                            ? "bg-white/20 text-white"
+                            : "bg-rose-50 text-[#D92D20]"
+                        }`}
+                      >
+                        <Check className="w-3.5 h-3.5 stroke-[2.5]" />
                       </div>
                       <div className="min-w-0">
-                        <h4 className="font-serif font-bold text-xs sm:text-[13px] text-[#2D2430] leading-tight">
-                          {p.title}
-                        </h4>
-                        <p className="text-[10.5px] text-[#5D5460] mt-0.5 line-clamp-2">
-                          {p.subtitle}
-                        </p>
+                        <span className="font-heading font-bold text-xs sm:text-[13px] block leading-tight">
+                          One-time
+                        </span>
+                        <span
+                          className={`text-[10px] block truncate ${
+                            frequency === "one_time" ? "text-rose-100" : "text-[#7A6448]"
+                          }`}
+                        >
+                          Single offering
+                        </span>
+                      </div>
+                    </button>
+
+                    {/* Recurring Option */}
+                    <button
+                      type="button"
+                      onClick={() => setFrequency("recurring")}
+                      className={`h-14 px-3 rounded-xl border text-left transition-all cursor-pointer flex items-center gap-2.5 ${
+                        frequency === "recurring"
+                          ? "bg-[#D92D20] text-white border-[#D92D20] shadow-xs ring-2 ring-[#D92D20]/30"
+                          : "bg-white text-[#2D2430] border-[#E8DCC8] hover:border-[#D92D20]/60 hover:bg-[#FFFDF9]"
+                      }`}
+                    >
+                      <div
+                        className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 ${
+                          frequency === "recurring"
+                            ? "bg-white/20 text-white"
+                            : "bg-rose-50 text-[#D92D20]"
+                        }`}
+                      >
+                        <RefreshCw className="w-3.5 h-3.5" />
+                      </div>
+                      <div className="min-w-0">
+                        <span className="font-heading font-bold text-xs sm:text-[13px] block leading-tight">
+                          Recurring
+                        </span>
+                        <span
+                          className={`text-[10px] block truncate ${
+                            frequency === "recurring" ? "text-rose-100" : "text-[#7A6448]"
+                          }`}
+                        >
+                          Automatic auto-debit
+                        </span>
+                      </div>
+                    </button>
+
+                    {/* Pledge Option */}
+                    <button
+                      type="button"
+                      onClick={() => setFrequency("pledge")}
+                      className={`h-14 px-3 rounded-xl border text-left transition-all cursor-pointer flex items-center gap-2.5 ${
+                        frequency === "pledge"
+                          ? "bg-[#D92D20] text-white border-[#D92D20] shadow-xs ring-2 ring-[#D92D20]/30"
+                          : "bg-white text-[#2D2430] border-[#E8DCC8] hover:border-[#D92D20]/60 hover:bg-[#FFFDF9]"
+                      }`}
+                    >
+                      <div
+                        className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 ${
+                          frequency === "pledge"
+                            ? "bg-white/20 text-white"
+                            : "bg-rose-50 text-[#D92D20]"
+                        }`}
+                      >
+                        <CalendarClock className="w-3.5 h-3.5" />
+                      </div>
+                      <div className="min-w-0">
+                        <span className="font-heading font-bold text-xs sm:text-[13px] block leading-tight">
+                          Pledge
+                        </span>
+                        <span
+                          className={`text-[10px] block truncate ${
+                            frequency === "pledge" ? "text-rose-100" : "text-[#7A6448]"
+                          }`}
+                        >
+                          Choose amount & date
+                        </span>
+                      </div>
+                    </button>
+                  </div>
+
+                  {/* Sub-options for Recurring */}
+                  {frequency === "recurring" && (
+                    <div className="p-2.5 rounded-xl bg-[#FFF9EE] border border-[#E2BC6B]/70 flex flex-wrap items-center justify-between gap-2 text-xs">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-[11px] font-bold text-[#8C5D17]">
+                          Cycle:
+                        </span>
+                        {[
+                          { id: "monthly", label: "Monthly" },
+                          { id: "quarterly", label: "Quarterly (3 Mo)" },
+                          { id: "annually", label: "Annual" },
+                        ].map((c) => (
+                          <button
+                            key={c.id}
+                            type="button"
+                            onClick={() => setRecurringCycle(c.id)}
+                            className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all cursor-pointer ${
+                              recurringCycle === c.id
+                                ? "bg-[#681B37] text-white shadow-2xs"
+                                : "bg-white text-[#5D5460] border border-[#E8DCC8] hover:bg-[#FFFDF9]"
+                            }`}
+                          >
+                            {c.label}
+                          </button>
+                        ))}
+                      </div>
+                      <span className="text-[10.5px] text-[#7A6448] italic">
+                        Debited on 5th of every cycle • Cancel anytime
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Sub-options for Pledge */}
+                  {frequency === "pledge" && (
+                    <div className="p-2.5 rounded-xl bg-[#FFF9EE] border border-[#E2BC6B]/70 grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                      <div>
+                        <label className="text-[10px] font-bold uppercase text-[#8C5D17] block mb-1">
+                          Pledge Target Date
+                        </label>
+                        <input
+                          type="date"
+                          value={pledgeDate}
+                          min={new Date().toISOString().split("T")[0]}
+                          onChange={(e) => setPledgeDate(e.target.value)}
+                          className="w-full h-8 px-2.5 rounded-lg border border-[#DEC077] text-xs font-semibold text-[#2D2430] bg-white focus:outline-none focus:ring-1 focus:ring-[#681B37]"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-[10px] font-bold uppercase text-[#8C5D17] block mb-1">
+                          Occasion (Sankalp)
+                        </label>
+                        <select
+                          value={pledgeOccasion}
+                          onChange={(e) => setPledgeOccasion(e.target.value)}
+                          className="w-full h-8 px-2 rounded-lg border border-[#DEC077] text-xs font-semibold text-[#2D2430] bg-white focus:outline-none focus:ring-1 focus:ring-[#681B37]"
+                        >
+                          <option>Birthday / Special Occasion</option>
+                          <option>Marriage Anniversary</option>
+                          <option>Diwali Mela Festival</option>
+                          <option>Chaitra / Sharad Navratri</option>
+                          <option>Pitri Shradh / Remembrance</option>
+                          <option>New Year Devotional Sankalp</option>
+                        </select>
                       </div>
                     </div>
-                  );
-                })}
+                  )}
+                </div>
+
+                {/* 2. Select Devotional Seva Purpose (Compact Low-Scroll Grid) */}
+                <div className="pt-2 border-t border-[#F0E3D0] space-y-2">
+                  <div className="flex items-center justify-between">
+                    <h3 className="font-heading font-bold text-xs sm:text-[13px] text-[#681B37]">
+                      Select Devotional Seva Purpose
+                    </h3>
+                    <span className="text-[10.5px] text-[#7A6448]">
+                      5 sacred initiatives
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    {donationPurposes.map((p) => {
+                      const Icon = iconMap[p.icon] || Heart;
+                      const isSelected = selectedPurpose.id === p.id;
+                      return (
+                        <div
+                          key={p.id}
+                          role="button"
+                          tabIndex={0}
+                          onClick={() => {
+                            setSelectedPurpose(p);
+                            setAmount(p.recommendedAmounts[1]);
+                          }}
+                          className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer flex items-center gap-2.5 ${
+                            isSelected
+                              ? "bg-[#FFF8ED] border-[#681B37] ring-1.5 ring-[#681B37] shadow-xs"
+                              : "bg-white border-[#E8DCC8] hover:border-[#DEC077] hover:bg-[#FFFDF9]"
+                          }`}
+                        >
+                          <div
+                            className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 border ${
+                              isSelected
+                                ? "bg-[#681B37] text-[#DFC17B] border-[#681B37]"
+                                : "bg-[#FFF8ED] text-[#681B37] border-[#C79A3B]/30"
+                            }`}
+                          >
+                            <Icon className="w-3.5 h-3.5" />
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <h4 className="font-heading font-bold text-xs text-[#2D2430] leading-tight truncate">
+                              {p.title}
+                            </h4>
+                            <p className="text-[10px] text-[#5D5460] mt-0.5 truncate">
+                              {p.subtitle}
+                            </p>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
               </div>
 
-              {/* Amount Selection */}
-              <div className="pt-2 border-t border-[#F0E3D0] space-y-3">
+              {/* Right Column (5 cols): Offering Amount & Summary Card */}
+              <div className="lg:col-span-5 bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-5 border border-[#C79A3B]/30 shadow-xs space-y-3.5">
                 <div>
-                  <h4 className="font-bold text-xs text-[#2D2430] mb-0.5">
+                  <h4 className="font-heading font-bold text-xs sm:text-sm text-[#2D2430] mb-0.5">
                     Select Offering Amount (INR)
                   </h4>
-                  <p className="text-[11px] text-[#877E8A]">
-                    Every rupee directly supports temple sevas. Custom amounts are always welcomed.
+                  <p className="text-[10.5px] text-[#877E8A]">
+                    Every rupee directly supports temple sevas.
                   </p>
                 </div>
 
                 {/* Preset Chips */}
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-1.5">
                   {selectedPurpose.recommendedAmounts.map((amt) => (
                     <button
                       key={amt}
                       type="button"
                       onClick={() => handleAmountSelect(amt)}
-                      className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                      className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                         amount === amt && !customAmount
-                          ? "bg-[#6F1837] text-white shadow-xs"
+                          ? "bg-[#681B37] text-white shadow-xs"
                           : "bg-[#FFF8ED] text-[#6F1837] border border-[#C79A3B]/40 hover:bg-[#FAF4E9]"
                       }`}
                     >
@@ -247,9 +491,9 @@ export default function DonationsPage({ onNavigate }) {
                 </div>
 
                 {/* Custom Amount Field */}
-                <div className="pt-1">
-                  <div className="relative max-w-xs">
-                    <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-sm font-bold text-[#6F1837]">
+                <div>
+                  <div className="relative">
+                    <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-xs font-bold text-[#6F1837]">
                       ₹
                     </span>
                     <input
@@ -257,21 +501,56 @@ export default function DonationsPage({ onNavigate }) {
                       placeholder="Or enter custom amount"
                       value={customAmount}
                       onChange={handleCustomAmountChange}
-                      className="w-full h-10 pl-8 pr-3 rounded-xl border border-[#C79A3B]/40 text-xs font-bold text-[#2D2430] bg-[#FFF8ED]/30 focus:border-[#6F1837] focus:outline-none"
+                      className="w-full h-9 pl-7 pr-3 rounded-xl border border-[#C79A3B]/40 text-xs font-bold text-[#2D2430] bg-[#FFF8ED]/30 focus:border-[#6F1837] focus:outline-none"
                     />
                   </div>
                 </div>
-              </div>
 
-              <div className="pt-3 flex items-center justify-between border-t border-[#F0E3D0]">
-                <div className="text-xs">
-                  <span className="text-[#877E8A]">Contribution: </span>
-                  <span className="font-sans font-bold tabular-nums text-base text-[#6F1837]">₹{amount.toLocaleString("en-IN")}</span>
+                {/* Offering Summary Box */}
+                <div className="p-3 rounded-xl bg-[#FFF9EE] border border-[#DEC077]/70 text-xs space-y-2">
+                  <div className="flex justify-between pb-1.5 border-b border-[#F0E3D0]">
+                    <span className="text-[#7A6448]">Selected Seva:</span>
+                    <span className="font-bold text-[#681B37] text-right truncate max-w-[60%]">
+                      {selectedPurpose.title}
+                    </span>
+                  </div>
+
+                  <div className="flex justify-between pb-1.5 border-b border-[#F0E3D0]">
+                    <span className="text-[#7A6448]">Type:</span>
+                    <span className="font-bold text-[#D92D20]">
+                      {frequency === "one_time"
+                        ? "One-time"
+                        : frequency === "recurring"
+                        ? `Recurring (${recurringCycle})`
+                        : `Pledge (${pledgeOccasion.split("/")[0]})`}
+                    </span>
+                  </div>
+
+                  <div className="flex justify-between items-center pt-0.5">
+                    <span className="text-[#2D2430] font-bold">
+                      {frequency === "recurring"
+                        ? "Amount per cycle:"
+                        : frequency === "pledge"
+                        ? "Pledged Amount:"
+                        : "Total Contribution:"}
+                    </span>
+                    <span className="font-heading font-extrabold text-base sm:text-lg text-[#681B37]">
+                      ₹{amount.toLocaleString("en-IN")}
+                    </span>
+                  </div>
                 </div>
+
+                {/* 80G Tax Badge */}
+                <div className="flex items-center gap-1.5 text-[10.5px] text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200">
+                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                  <span>Eligible for Section 80G Tax Exemption Certificate.</span>
+                </div>
+
+                {/* Continue CTA */}
                 <button
                   type="button"
                   onClick={() => setStep(2)}
-                  className="px-6 py-2.5 rounded-xl bg-[#6F1837] hover:bg-[#882245] text-white text-xs font-bold flex items-center gap-1.5 shadow-2xs cursor-pointer"
+                  className="w-full py-2.5 rounded-xl bg-[#681B37] hover:bg-[#882245] text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-2xs cursor-pointer active:scale-98 transition-all"
                 >
                   <span>Continue to Donor Details</span>
                   <ArrowRight className="w-3.5 h-3.5 text-[#DFC17B]" />
@@ -453,17 +732,33 @@ export default function DonationsPage({ onNavigate }) {
                   <span className="font-semibold text-[#2D2430]">{selectedPurpose.title}</span>
                 </div>
                 <div className="flex justify-between">
+                  <span className="text-[#877E8A]">Donation Type:</span>
+                  <span className="font-bold text-[#D92D20]">
+                    {frequency === "one_time"
+                      ? "One-time Offering"
+                      : frequency === "recurring"
+                      ? `Recurring (${recurringCycle.toUpperCase()} Auto-debit)`
+                      : `Sacred Pledge (Due: ${pledgeDate})`}
+                  </span>
+                </div>
+                <div className="flex justify-between">
                   <span className="text-[#877E8A]">Donor:</span>
                   <span className="font-semibold text-[#2D2430]">{formData.fullName}</span>
                 </div>
                 <div className="flex justify-between pt-1 border-t border-[#F0E3D0] font-bold text-sm">
-                  <span className="text-[#2D2430]">Total Donation:</span>
+                  <span className="text-[#2D2430]">
+                    {frequency === "recurring"
+                      ? "Amount per cycle:"
+                      : frequency === "pledge"
+                      ? "Pledged Amount (Pay on Due Date):"
+                      : "Total Donation:"}
+                  </span>
                   <span className="font-sans font-bold tabular-nums text-[#6F1837]">₹{amount.toLocaleString("en-IN")}</span>
                 </div>
               </div>
 
               <div className="p-2.5 rounded-lg bg-amber-50 border border-amber-200 text-[10.5px] text-amber-800">
-                <strong>Prototype Demo:</strong> No live banking charge is made. Clicking below will instantly produce an authentic devotional e-receipt for demonstration.
+                <strong>Prototype Demo:</strong> No live banking charge is made. Clicking below will instantly register your devotional offering and produce an authentic e-receipt / pledge certificate.
               </div>
 
               <div className="pt-2 flex items-center justify-between border-t border-[#F0E3D0]">
@@ -479,7 +774,13 @@ export default function DonationsPage({ onNavigate }) {
                   onClick={handleCompleteDonation}
                   className="px-6 py-2.5 rounded-xl bg-[#6F1837] hover:bg-[#882245] text-white text-xs font-bold flex items-center gap-1.5 shadow-2xs"
                 >
-                  <span>Simulate Payment & Generate Receipt</span>
+                  <span>
+                    {frequency === "pledge"
+                      ? "Confirm Sacred Pledge (Pay ₹0 Today)"
+                      : frequency === "recurring"
+                      ? "Authorize Recurring Seva Mandate"
+                      : "Simulate Payment & Generate Receipt"}
+                  </span>
                   <CheckCircle2 className="w-4 h-4 text-emerald-400" />
                 </button>
               </div>
@@ -516,6 +817,10 @@ export default function DonationsPage({ onNavigate }) {
                 <div className="flex justify-between pb-1.5 border-b border-[#F0E3D0]">
                   <span className="text-[#877E8A]">Purpose:</span>
                   <span className="font-semibold text-[#2D2430]">{confirmedDonation.purpose}</span>
+                </div>
+                <div className="flex justify-between pb-1.5 border-b border-[#F0E3D0]">
+                  <span className="text-[#877E8A]">Donation Type:</span>
+                  <span className="font-bold text-[#D92D20]">{confirmedDonation.frequencyLabel}</span>
                 </div>
                 <div className="flex justify-between pb-1.5 border-b border-[#F0E3D0]">
                   <span className="text-[#877E8A]">Contribution:</span>
@@ -576,12 +881,15 @@ export default function DonationsPage({ onNavigate }) {
                 className="bg-[#FFF9EE]/70 rounded-xl p-4 border border-[#C79A3B]/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
               >
                 <div className="space-y-1">
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
                     <span className="font-mono text-xs font-bold text-[#6F1837] bg-white px-2 py-0.5 rounded border border-[#C79A3B]/25">
                       {d.id}
                     </span>
                     <span className="text-[9.5px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full">
                       {d.status}
+                    </span>
+                    <span className="text-[9.5px] font-bold text-[#991B1B] bg-rose-50 border border-rose-200 px-2 py-0.5 rounded-full">
+                      {d.frequencyLabel || "One-time Offering"}
                     </span>
                   </div>
                   <h4 className="font-serif font-bold text-sm text-[#2D2430]">{d.purpose}</h4>

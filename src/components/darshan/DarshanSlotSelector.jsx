@@ -6,6 +6,7 @@ export default function DarshanSlotSelector({
   slots = [],
   selectedSlot,
   onSelectSlot,
+  selectedCategory,
 }) {
   const [periodFilter, setPeriodFilter] = useState("All");
 
@@ -27,9 +28,16 @@ export default function DarshanSlotSelector({
         {/* Compact Header: Selected Date & Filter Pills */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2.5 mb-2.5 border-b border-[#F0E3D0]">
           <div>
-            <span className="text-[9.5px] font-bold uppercase tracking-wider text-[#C79A3B] block leading-none">
-              AVAILABLE SLOTS
-            </span>
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <span className="text-[9.5px] font-bold uppercase tracking-wider text-[#C79A3B] block leading-none">
+                AVAILABLE SLOTS
+              </span>
+              {selectedCategory && (
+                <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-[#FFF4DF] text-[#8C5D17] border border-[#E8CE95]">
+                  {selectedCategory.name}
+                </span>
+              )}
+            </div>
             <h3 className="font-serif text-[14px] sm:text-[15px] font-bold text-[#6F1837] tracking-tight mt-0.5">
               {formattedDate}
             </h3>

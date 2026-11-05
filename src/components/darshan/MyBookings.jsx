@@ -50,6 +50,9 @@ export default function MyBookings({
                   <span className="font-mono text-xs font-bold text-[#6F1837] bg-white px-2 py-0.5 rounded-lg border border-[#C79A3B]/25">
                     {b.bookingReference}
                   </span>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#FFF4DF] text-[#8C5D17] border border-[#E8CE95]">
+                    {b.categoryName || "General Darshan"}
+                  </span>
                   <span className="inline-flex items-center gap-1 text-[9.5px] font-bold uppercase bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full border border-emerald-300">
                     <CheckCircle2 className="w-2.5 h-2.5 text-emerald-600" />
                     <span>{b.status}</span>

@@ -114,6 +114,15 @@ export const translations = {
         subtitle: "Current estimated queue time for general darshan",
         linkText: "Queue Details",
       },
+      darshanGuidance: {
+        title: "Darshan Guidance",
+        currentWaitLabel: "Current Wait Time",
+        currentWaitValue: "20 – 35 mins",
+        normalFlow: "Normal Flow",
+        recommendedLabel: "Recommended Darshan Time",
+        recommendedValue: "2:30 PM – 4:00 PM",
+        lighterCrowd: "Lighter crowd, smoother darshan",
+      },
     },
     services: {
       heading: "Temple Services",
@@ -383,6 +392,15 @@ export const translations = {
         subtitle: "সাধারণ দর্শনের বর্তমান আনুমানিক অপেক্ষার সময়",
         linkText: "ভিড়ের তথ্য",
       },
+      darshanGuidance: {
+        title: "দর্শন নির্দেশিকা",
+        currentWaitLabel: "লাইনে অপেক্ষার সময়",
+        currentWaitValue: "২০ – ৩৫ মিনিট",
+        normalFlow: "স্বাভাবিক ভিড়",
+        recommendedLabel: "দর্শনের উপযুক্ত সময়",
+        recommendedValue: "২:৩০ PM – ৪:০০ PM",
+        lighterCrowd: "কম ভিড়, স্বাচ্ছন্দ্য দর্শন",
+      },
     },
     services: {
       heading: "মন্দির সেবাসমূহ",
@@ -651,6 +669,15 @@ export const translations = {
         badge: "सामान्य प्रवाह",
         subtitle: "सामान्य दर्शन के लिए वर्तमान अनुमानित प्रतीक्षा समय",
         linkText: "कतार विवरण",
+      },
+      darshanGuidance: {
+        title: "दर्शन मार्गदर्शिका",
+        currentWaitLabel: "वर्तमान प्रतीक्षा समय",
+        currentWaitValue: "20 – 35 मिनट",
+        normalFlow: "सामान्य प्रवाह",
+        recommendedLabel: "अनुशंसित दर्शन समय",
+        recommendedValue: "2:30 PM – 4:00 PM",
+        lighterCrowd: "कम भीड़, सुगम दर्शन",
       },
     },
     services: {

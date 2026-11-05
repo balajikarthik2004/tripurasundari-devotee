@@ -1,11 +1,12 @@
 import React from "react";
-import { User, Phone, Users, ShieldCheck, AlertCircle } from "lucide-react";
+import { User, Phone, Users, ShieldCheck, AlertCircle, Accessibility, Sparkles, Check, Baby } from "lucide-react";
 import { useLanguage } from "../../context/LanguageContext";
 
 export default function DevoteeDetailsForm({
   formData,
   onChange,
   errors = {},
+  selectedCategory,
 }) {
   const { t } = useLanguage();
 
@@ -13,14 +14,27 @@ export default function DevoteeDetailsForm({
     onChange({ ...formData, devoteesCount: count });
   };
 
+  const isSeniorCategory = selectedCategory?.id === "senior_divyangjan";
+  const isSpecialCategory = selectedCategory?.id === "special";
+  const isInfantCategory = selectedCategory?.id === "infant_family";
+
   return (
     <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 border border-[#C79A3B]/30 shadow-[0_4px_16px_rgba(74,16,39,0.04)] select-none space-y-4">
       {/* Header */}
       <div className="pb-3 border-b border-[#F0E3D0]">
-        <span className="text-[10px] font-bold uppercase tracking-wider text-[#C79A3B] block">
-          STEP 2 OF 3 • {t("darshan.step2", "DEVOTEE DETAILS")}
-        </span>
-        <h3 className="font-serif text-base sm:text-lg font-bold text-[#6F1837] tracking-tight">
+        <div className="flex items-center justify-between gap-2 flex-wrap">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-[#C79A3B] block">
+            STEP 2 OF 3 • {t("darshan.step2", "DEVOTEE DETAILS")}
+          </span>
+          {selectedCategory && (
+            <span
+              className={`text-[10.5px] font-bold px-2.5 py-0.5 rounded-full border ${selectedCategory.badgeColor}`}
+            >
+              {selectedCategory.name}
+            </span>
+          )}
+        </div>
+        <h3 className="font-serif text-base sm:text-lg font-bold text-[#6F1837] tracking-tight mt-1">
           {t("darshan.step2", "Devotee & Contact Information")}
         </h3>
         <p className="text-xs text-[#5D5460] mt-0.5">
@@ -94,13 +108,13 @@ export default function DevoteeDetailsForm({
           )}
         </div>
 
-        {/* Number of Devotees Selector (1 to 6) */}
+        {/* Number of Devotees Selector */}
         <div>
           <label className="block text-xs font-bold text-[#2D2430] mb-1.5">
-            Total Number of Devotees (Maximum 6 per ticket)
+            Total Number of Devotees ({isSeniorCategory ? "Max 2 per pass: Devotee + 1 Attendant" : isInfantCategory ? "Max 3 per pass: Parents + Infant" : "Maximum 6 per pass"})
           </label>
           <div className="grid grid-cols-6 gap-2">
-            {[1, 2, 3, 4, 5, 6].map((num) => (
+            {(isSeniorCategory ? [1, 2] : isInfantCategory ? [1, 2, 3] : [1, 2, 3, 4, 5, 6]).map((num) => (
               <button
                 key={num}
                 type="button"
@@ -118,15 +132,100 @@ export default function DevoteeDetailsForm({
           </div>
         </div>
 
-        {/* Free Assurance Pill */}
-        <div className="flex items-center gap-2 p-2.5 rounded-xl bg-emerald-50/70 border border-emerald-200 text-xs text-emerald-800">
-          <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
-          <span className="text-[11px] leading-snug">
-            <strong>100% Free Booking:</strong> No credit card, payment gateway or Aadhaar details required.
-          </span>
-        </div>
+        {/* Category Specific Infant & Expectant Mothers Options */}
+        {isInfantCategory && (
+          <div className="p-3.5 rounded-xl bg-[#FDF2F8] border border-[#FBCFE8] space-y-2">
+            <div className="flex items-center gap-2">
+              <Baby className="w-4 h-4 text-[#BE185D]" />
+              <span className="font-bold text-xs text-[#9D174D]">
+                Matri & Shishu Care Facility
+              </span>
+            </div>
+
+            <label className="flex items-start gap-2.5 text-xs text-[#831843] cursor-pointer select-none">
+              <input
+                type="checkbox"
+                checked={formData.needsPramStorage || false}
+                onChange={(e) =>
+                  onChange({ ...formData, needsPramStorage: e.target.checked })
+                }
+                className="mt-0.5 rounded text-[#BE185D] focus:ring-[#BE185D]"
+              />
+              <span className="leading-snug">
+                Request stroller / baby pram storage & feeder room access near Gate 1 Helpdesk.
+              </span>
+            </label>
+
+            <p className="text-[10.5px] text-[#701A75] leading-tight pt-1 border-t border-[#FCE7F3]">
+              Note: Dedicated shaded express queue lane for expecting mothers and children below 5 years.
+            </p>
+          </div>
+        )}
+
+        {/* Category Specific Accessibility Options: Senior Citizen & Divyangjan */}
+        {isSeniorCategory && (
+          <div className="p-3.5 rounded-xl bg-[#EFF6FF] border border-[#BFDBFE] space-y-2">
+            <div className="flex items-center gap-2">
+              <Accessibility className="w-4 h-4 text-[#1D4ED8]" />
+              <span className="font-bold text-xs text-[#1E40AF]">
+                Accessibility Support Services
+              </span>
+            </div>
+
+            <label className="flex items-start gap-2.5 text-xs text-[#1E3A8A] cursor-pointer select-none">
+              <input
+                type="checkbox"
+                checked={formData.needsWheelchair || false}
+                onChange={(e) =>
+                  onChange({ ...formData, needsWheelchair: e.target.checked })
+                }
+                className="mt-0.5 rounded text-[#1D4ED8] focus:ring-[#1D4ED8]"
+              />
+              <span className="leading-snug">
+                Request complimentary wheelchair & ramp volunteer at Gate 1 Helpdesk.
+              </span>
+            </label>
+
+            <p className="text-[10.5px] text-[#475569] leading-tight pt-1 border-t border-[#DBEAFE]">
+              Note: Devotees are requested to carry proof of age (Aadhaar/Voter ID) or Disability Card at the time of entry.
+            </p>
+          </div>
+        )}
+
+        {/* Category Specific Pricing Breakdown: Special Entry */}
+        {isSpecialCategory && (
+          <div className="p-3.5 rounded-xl bg-[#FEF3C7]/60 border border-[#FDE68A] space-y-2 text-xs">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-1.5 font-bold text-[#92400E]">
+                <Sparkles className="w-4 h-4 text-[#D97706]" />
+                <span>Special Entry Fee Calculation</span>
+              </div>
+              <span className="font-heading font-bold text-sm text-[#78350F]">
+                ₹{100 * (formData.devoteesCount || 1)}
+              </span>
+            </div>
+
+            <div className="flex justify-between text-[11px] text-[#78350F]">
+              <span>Rate: ₹100 × {formData.devoteesCount || 1} Devotee(s)</span>
+              <span className="font-medium">Priority Queue Access</span>
+            </div>
+
+            <p className="text-[10px] text-[#92400E]/80 italic pt-1 border-t border-[#FCD34D]/60">
+              Note: Special Entry pricing is an illustrative prototype configuration. No credit card or active gateway is required for this demo.
+            </p>
+          </div>
+        )}
+
+        {/* Standard Free Assurance for General Darshan */}
+        {!isSpecialCategory && !isSeniorCategory && (
+          <div className="flex items-center gap-2 p-2.5 rounded-xl bg-emerald-50/70 border border-emerald-200 text-xs text-emerald-800">
+            <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
+            <span className="text-[11px] leading-snug">
+              <strong>100% Free General Darshan:</strong> No credit card, payment gateway or registration fee required.
+            </span>
+          </div>
+        )}
       </div>
     </div>
   );
 }
-

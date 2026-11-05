@@ -1,12 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import DarshanHeader from "../components/darshan/DarshanHeader";
+import DarshanCategorySelector from "../components/darshan/DarshanCategorySelector";
 import DarshanCalendar from "../components/darshan/DarshanCalendar";
 import DarshanSlotSelector from "../components/darshan/DarshanSlotSelector";
 import DevoteeDetailsForm from "../components/darshan/DevoteeDetailsForm";
 import BookingSummary from "../components/darshan/BookingSummary";
 import DarshanTicket from "../components/darshan/DarshanTicket";
 import MyBookings from "../components/darshan/MyBookings";
-import { getSlotsForDate, initialSampleBookings } from "../data/darshanSlots";
+import CrowdStatus from "../components/darshan/CrowdStatus";
+import {
+  getSlotsForDate,
+  initialSampleBookings,
+  darshanCategories,
+} from "../data/darshanSlots";
 import { ArrowRight, ArrowLeft, Check, Sparkles, Calendar, Clock, User } from "lucide-react";
 import { useLanguage } from "../context/LanguageContext";
 
@@ -16,15 +22,27 @@ export default function DarshanPage({ onNavigate }) {
   // Tab state: 'book' | 'my-bookings'
   const [activeTab, setActiveTab] = useState("book");
 
-  // Booking Flow Steps: 1 (Date & Slot) -> 2 (Devotee Details) -> 3 (Confirmation) -> 4 (Ticket Confirmed)
+  // Booking Flow Steps: 1 (Category, Date & Slot) -> 2 (Devotee Details) -> 3 (Confirmation) -> 4 (Ticket Confirmed)
   const [bookingStep, setBookingStep] = useState(1);
+
+  // Selected Darshan Category (default: 'general')
+  const [selectedCategoryId, setSelectedCategoryId] = useState("general");
+  const selectedCategory = useMemo(() => {
+    return (
+      darshanCategories.find((c) => c.id === selectedCategoryId) ||
+      darshanCategories[0]
+    );
+  }, [selectedCategoryId]);
 
   // Selected Date & Slots
   const [selectedDate, setSelectedDate] = useState(() => new Date());
-  const [slots, setSlots] = useState(() => getSlotsForDate(new Date()));
+  const [slots, setSlots] = useState(() => getSlotsForDate(new Date(), "general"));
   const [selectedSlot, setSelectedSlot] = useState(() => {
-    const initialSlots = getSlotsForDate(new Date());
-    return initialSlots.find((s) => s.status === "available" || s.status === "filling_fast") || null;
+    const initialSlots = getSlotsForDate(new Date(), "general");
+    return (
+      initialSlots.find((s) => s.status === "available" || s.status === "filling_fast") ||
+      null
+    );
   });
 
   // Devotee Form State
@@ -32,6 +50,7 @@ export default function DarshanPage({ onNavigate }) {
     fullName: "",
     mobileNumber: "",
     devoteesCount: 1,
+    needsWheelchair: false,
   });
   const [formErrors, setFormErrors] = useState({});
 
@@ -57,17 +76,25 @@ export default function DarshanPage({ onNavigate }) {
     }
   }, [bookings]);
 
-  // When selected date changes, load corresponding slots
+  // When selected date OR selected category changes, load corresponding slots
   useEffect(() => {
-    const dateSlots = getSlotsForDate(selectedDate);
+    const dateSlots = getSlotsForDate(selectedDate, selectedCategoryId);
     setSlots(dateSlots);
 
-    // Auto-select first available slot if currently selected slot isn't in new date
+    // Auto-select first available slot if currently selected slot isn't in new date/category
     const firstAvailable = dateSlots.find(
       (s) => s.status === "available" || s.status === "filling_fast"
     );
     setSelectedSlot(firstAvailable || null);
-  }, [selectedDate]);
+  }, [selectedDate, selectedCategoryId]);
+
+  const handleCategoryChange = (catId) => {
+    setSelectedCategoryId(catId);
+    // If switched to senior citizen category and devotees count > 2, adjust to 2
+    if (catId === "senior_divyangjan" && formData.devoteesCount > 2) {
+      setFormData((prev) => ({ ...prev, devoteesCount: 2 }));
+    }
+  };
 
   // Handle Form Validation
   const validateForm = () => {
@@ -110,9 +137,19 @@ export default function DarshanPage({ onNavigate }) {
 
   // Final Confirmation
   const handleConfirmBooking = () => {
+    const isSpecial = selectedCategory.id === "special";
+    const totalFeeText = isSpecial
+      ? `₹${100 * formData.devoteesCount} (Special Entry)`
+      : "₹0 (Free Darshan)";
+
     const newBooking = {
       id: generateBookingReference(),
       bookingReference: generateBookingReference(),
+      categoryId: selectedCategory.id,
+      categoryName: selectedCategory.name,
+      entryGate: selectedCategory.entryGate,
+      needsWheelchair: formData.needsWheelchair || false,
+      needsPramStorage: formData.needsPramStorage || false,
       devoteeName: formData.fullName,
       mobileNumber: `+91 ${formData.mobileNumber}`,
       devoteesCount: formData.devoteesCount,
@@ -133,7 +170,7 @@ export default function DarshanPage({ onNavigate }) {
         minute: "2-digit",
       }),
       status: "Confirmed",
-      fee: "₹0 (Free Darshan)",
+      fee: totalFeeText,
       isPrototype: true,
     };
 
@@ -149,6 +186,7 @@ export default function DarshanPage({ onNavigate }) {
       fullName: "",
       mobileNumber: "",
       devoteesCount: 1,
+      needsWheelchair: false,
     });
     setFormErrors({});
   };
@@ -162,7 +200,10 @@ export default function DarshanPage({ onNavigate }) {
   return (
     <div className="space-y-4 sm:space-y-4.5 animate-in fade-in duration-300">
       {/* Devotional Breadcrumb Navigation */}
-      <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-xs text-[#877E8A] px-1 select-none">
+      <nav
+        aria-label="Breadcrumb"
+        className="flex items-center gap-1.5 text-xs text-[#877E8A] px-1 select-none"
+      >
         <button
           type="button"
           onClick={() => onNavigate?.("home")}
@@ -172,6 +213,18 @@ export default function DarshanPage({ onNavigate }) {
         </button>
         <span className="text-[#C79A3B]">•</span>
         <span className="text-[#6F1837] font-semibold">Darshan Booking</span>
+        {bookingStep > 1 && (
+          <>
+            <span className="text-[#C79A3B]">•</span>
+            <span className="text-[#845212] capitalize">
+              {bookingStep === 2
+                ? "Devotee Details"
+                : bookingStep === 3
+                ? "Review Pass"
+                : "Confirmed Pass"}
+            </span>
+          </>
+        )}
       </nav>
 
       {/* 1. Darshan Header (Compact 150-175px viewport height) */}
@@ -197,11 +250,19 @@ export default function DarshanPage({ onNavigate }) {
         </div>
       ) : (
         <div className="space-y-4">
-          {/* 3. Booking Stepper Progress Indicator (Height 64-72px, centered) */}
+          {/* Category Selector (Step 1) */}
+          {bookingStep === 1 && (
+            <DarshanCategorySelector
+              selectedCategoryId={selectedCategoryId}
+              onSelectCategory={handleCategoryChange}
+            />
+          )}
+
+          {/* Booking Stepper Progress Indicator */}
           {bookingStep < 4 && (
             <div className="bg-white rounded-xl sm:rounded-2xl h-16 sm:h-[68px] px-2.5 sm:px-8 border border-[#C79A3B]/30 shadow-2xs select-none flex items-center justify-center">
               <div className="flex items-center justify-between w-full max-w-xl mx-auto">
-                {/* Step 1: Date & Slot */}
+                {/* Step 1: Category, Date & Slot */}
                 <div
                   role="button"
                   tabIndex={0}
@@ -223,10 +284,14 @@ export default function DarshanPage({ onNavigate }) {
                         : "border border-gray-300 text-gray-500 bg-gray-50"
                     }`}
                   >
-                    {bookingStep > 1 ? <Check className="w-3 h-3 stroke-[2.5]" /> : "1"}
+                    {bookingStep > 1 ? (
+                      <Check className="w-3 h-3 stroke-[2.5]" />
+                    ) : (
+                      "1"
+                    )}
                   </div>
                   <span className="text-[10.5px] sm:text-xs font-bold">
-                    <span>{t("darshan.step1", "Date & Slot")}</span>
+                    <span>Date & Slot</span>
                   </span>
                 </div>
 
@@ -259,10 +324,14 @@ export default function DarshanPage({ onNavigate }) {
                         : "border border-gray-300 text-gray-500 bg-gray-50"
                     }`}
                   >
-                    {bookingStep > 2 ? <Check className="w-3 h-3 stroke-[2.5]" /> : "2"}
+                    {bookingStep > 2 ? (
+                      <Check className="w-3 h-3 stroke-[2.5]" />
+                    ) : (
+                      "2"
+                    )}
                   </div>
                   <span className="text-[10.5px] sm:text-xs font-bold">
-                    <span>{t("darshan.step2", "Devotee Details")}</span>
+                    <span>Devotee Details</span>
                   </span>
                 </div>
 
@@ -291,16 +360,17 @@ export default function DarshanPage({ onNavigate }) {
                     3
                   </div>
                   <span className="text-[10.5px] sm:text-xs font-bold">
-                    <span>{t("darshan.step3", "Confirm Pass")}</span>
+                    <span>Confirm Pass</span>
                   </span>
                 </div>
               </div>
             </div>
           )}
 
-          {/* Step 1: Calendar & Slot Selector (Balanced 47% : 53% Two-Column Desktop Grid) */}
+          {/* Step 1: Calendar & Slot Selector */}
           {bookingStep === 1 && (
             <div className="space-y-4">
+              {/* Step 1 Slot Selection Grid */}
               <div className="grid grid-cols-1 lg:grid-cols-[47%_53%] gap-3.5 lg:gap-4 items-stretch">
                 {/* Left: Interactive Monthly Calendar */}
                 <div className="h-full">
@@ -310,35 +380,59 @@ export default function DarshanPage({ onNavigate }) {
                   />
                 </div>
 
-                {/* Right: Available Slots for Selected Date */}
+                {/* Right: Available Slots for Selected Date & Category */}
                 <div className="h-full">
                   <DarshanSlotSelector
                     selectedDate={selectedDate}
                     slots={slots}
                     selectedSlot={selectedSlot}
                     onSelectSlot={setSelectedSlot}
+                    selectedCategory={selectedCategory}
                   />
                 </div>
               </div>
 
-              {/* 5. Selected Slot Summary (Full-width horizontal card immediately below grid) */}
+              {/* Compact Crowd-Status Preview Linking to Full Interactive Map */}
+              <CrowdStatus
+                onViewCrowdMap={() => onNavigate?.("guide", { tab: "crowd" })}
+              />
+
+              {/* Selected Slot & Category Summary Bar */}
               <div className="bg-white rounded-xl sm:rounded-2xl px-4 py-3 sm:px-5 sm:py-3 border border-[#C79A3B]/30 shadow-2xs flex flex-col sm:flex-row items-center justify-between gap-3 min-h-[56px] select-none">
                 <div className="flex items-center gap-2.5 text-xs text-[#2D2430] w-full sm:w-auto">
                   {selectedSlot ? (
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shrink-0" />
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#FFF4DF] text-[#8C5D17] border border-[#E8CE95]">
+                        {selectedCategory.name}
+                      </span>
                       <span className="font-sans font-bold tabular-nums text-[#6F1837] text-[13px] sm:text-[13.5px]">
-                        {selectedDate.toLocaleDateString("en-IN", { weekday: "short", day: "numeric", month: "short", year: "numeric" })}
+                        {selectedDate.toLocaleDateString("en-IN", {
+                          weekday: "short",
+                          day: "numeric",
+                          month: "short",
+                          year: "numeric",
+                        })}
                       </span>
                       <span className="text-[#C79A3B]">•</span>
-                      <span className="font-semibold text-[#2D2430]">{selectedSlot.label}</span>
-                      <span className="text-[#665D6A]">({selectedSlot.time})</span>
-                      <span className="inline-flex items-center gap-1 text-[9.5px] font-bold uppercase text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-300 ml-1">
-                        ₹0 Fee (Free)
+                      <span className="font-semibold text-[#2D2430]">
+                        {selectedSlot.label}
+                      </span>
+                      <span className="text-[#665D6A]">
+                        ({selectedSlot.time})
+                      </span>
+                      <span
+                        className={`inline-flex items-center gap-1 text-[9.5px] font-bold uppercase px-2 py-0.5 rounded-full border ml-1 ${selectedCategory.badgeColor}`}
+                      >
+                        {selectedCategory.price === 0
+                          ? "₹0 Fee (Free)"
+                          : `${selectedCategory.priceLabel} / Person`}
                       </span>
                     </div>
                   ) : (
-                    <span className="text-[#877E8A] italic">Please select an open time slot from the schedule above to proceed</span>
+                    <span className="text-[#877E8A] italic">
+                      Please select an open time slot from the schedule above to proceed
+                    </span>
                   )}
                 </div>
 
@@ -352,7 +446,7 @@ export default function DarshanPage({ onNavigate }) {
                       : "bg-gray-100 text-gray-400 cursor-not-allowed border border-gray-200"
                   }`}
                 >
-                  <span>{t("darshan.continueBtn", "Continue to Devotee Details")}</span>
+                  <span>Continue to Devotee Details</span>
                   <ArrowRight className="w-3.5 h-3.5 text-[#DFC17B]" />
                 </button>
               </div>
@@ -366,6 +460,7 @@ export default function DarshanPage({ onNavigate }) {
                 formData={formData}
                 onChange={setFormData}
                 errors={formErrors}
+                selectedCategory={selectedCategory}
               />
 
               {/* Navigation Actions for Step 2 */}
@@ -376,7 +471,7 @@ export default function DarshanPage({ onNavigate }) {
                   className="px-4 py-2.5 rounded-xl border border-[#C79A3B]/40 hover:bg-[#FFF8ED] text-xs font-semibold text-[#6F1837] flex items-center gap-1.5 transition-colors cursor-pointer"
                 >
                   <ArrowLeft className="w-3.5 h-3.5" />
-                  <span>{t("darshan.backBtn", "Back to Slot Selection")}</span>
+                  <span>Back to Category & Slot</span>
                 </button>
 
                 <button
@@ -384,7 +479,7 @@ export default function DarshanPage({ onNavigate }) {
                   onClick={handleProceedToSummary}
                   className="px-6 py-2.5 rounded-xl bg-[#6F1837] hover:bg-[#882245] text-xs font-bold text-white shadow-2xs flex items-center gap-2 transition-all cursor-pointer active:scale-98"
                 >
-                  <span>{t("darshan.continueBtn", "Review Booking Summary")}</span>
+                  <span>Review Booking Summary</span>
                   <ArrowRight className="w-3.5 h-3.5 text-[#DFC17B]" />
                 </button>
               </div>
@@ -398,6 +493,7 @@ export default function DarshanPage({ onNavigate }) {
                 selectedDate={selectedDate}
                 selectedSlot={selectedSlot}
                 formData={formData}
+                selectedCategory={selectedCategory}
                 onBack={() => setBookingStep(2)}
                 onConfirm={handleConfirmBooking}
               />
@@ -409,7 +505,10 @@ export default function DarshanPage({ onNavigate }) {
             <div className="space-y-4">
               <DarshanTicket
                 booking={confirmedTicket}
-                onViewMyBookings={() => setActiveTab("my-bookings")}
+                onViewMyBookings={() => {
+                  setActiveTab("my-bookings");
+                  setBookingStep(1);
+                }}
                 onBookAnother={handleBookAnother}
               />
             </div>
