@@ -10,6 +10,7 @@ import TempleInfoPage from "./pages/TempleInfoPage";
 import EventsPage from "./pages/EventsPage";
 import VisitGuidePage from "./pages/VisitGuidePage";
 import HeritageArticlePage from "./pages/HeritageArticlePage";
+import MembershipPage from "./pages/MembershipPage";
 import ComingSoonModule from "./components/common/ComingSoonModule";
 
 export default function App() {
@@ -188,6 +189,8 @@ export default function App() {
         <PrasadPage onNavigate={handleNavSelect} />
       ) : activeNav === "accommodation" ? (
         <AccommodationPage onNavigate={handleNavSelect} />
+      ) : activeNav === "membership" ? (
+        <MembershipPage onNavigate={handleNavSelect} />
       ) : activeNav === "info" ? (
         <TempleInfoPage
           onNavigate={handleNavSelect}

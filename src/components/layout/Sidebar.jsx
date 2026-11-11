@@ -9,6 +9,7 @@ import {
   Info,
   CalendarDays,
   Map,
+  Crown,
 } from "lucide-react";
 import { navigationItems, templeInfo } from "../../data/dashboardData";
 import { useLanguage } from "../../context/LanguageContext";
@@ -20,6 +21,7 @@ const iconMap = {
   Heart,
   ShoppingBag,
   Bed,
+  Crown,
   Info,
   CalendarDays,
   MapPin: Map,

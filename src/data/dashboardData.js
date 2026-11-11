@@ -27,6 +27,7 @@ export const navigationItems = [
   { id: "donations", label: "Donations", icon: "Heart", active: false, href: "#" },
   { id: "prasad", label: "Prasad & Store", icon: "ShoppingBag", active: false, href: "#" },
   { id: "accommodation", label: "Accommodation", icon: "Bed", active: false, href: "#" },
+  { id: "membership", label: "Membership", icon: "Crown", active: false, href: "#" },
   { id: "info", label: "Temple Information", icon: "Info", active: false, href: "#" },
   { id: "events", label: "Events & Festivals", icon: "CalendarDays", active: false, href: "#" },
   { id: "guide", label: "Visit Guide", icon: "MapPin", active: false, href: "#" },

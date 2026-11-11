@@ -55,6 +55,7 @@ export const translations = {
       info: "Temple Information",
       events: "Events & Festivals",
       guide: "Visit Guide",
+      membership: "Membership",
     },
     hero: {
       slides: [
@@ -333,6 +334,7 @@ export const translations = {
       info: "মন্দির তথ্য",
       events: "উৎসব ও অনুষ্ঠান",
       guide: "তীর্থ নির্দেশিকা",
+      membership: "সদস্যপদ",
     },
     hero: {
       slides: [
@@ -611,6 +613,7 @@ export const translations = {
       info: "मंदिर परिचय",
       events: "उत्सव एवं पर्व",
       guide: "दर्शन मार्गदर्शिका",
+      membership: "सदस्यता",
     },
     hero: {
       slides: [
